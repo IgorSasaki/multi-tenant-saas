@@ -31,19 +31,19 @@ export const mockCompanies: Record<string, Company> = {
   company1: {
     id: 'company1',
     name: 'Tech Solutions',
-    logo: '/tech-company-logo.jpg',
+    logo: 'https://images.unsplash.com/photo-1764123108291-0f48d2c7e563',
     createdAt: new Date('2023-12-01')
   },
   company2: {
     id: 'company2',
     name: 'Design Studio',
-    logo: '/design-studio-logo.png',
+    logo: 'https://plus.unsplash.com/premium_photo-1664300210895-efce666cf5ab',
     createdAt: new Date('2023-11-15')
   },
   company3: {
     id: 'company3',
     name: 'Marketing Agency',
-    logo: '/marketing-agency-logo.png',
+    logo: 'https://plus.unsplash.com/premium_photo-1752230054438-53a8e7493f55',
     createdAt: new Date('2023-10-20')
   }
 }
