@@ -1,7 +1,8 @@
-import { Company } from '@/types/Company'
-import { Membership } from '@/types/Membership'
+import type { Company } from '@/types/Company'
+import type { Invite } from '@/types/Invite'
+import type { Membership } from '@/types/Membership'
 import { Role } from '@/types/Role'
-import { User } from '@/types/User'
+import type { User } from '@/types/User'
 
 export const mockUsers: Record<string, User> = {
   user1: {
@@ -70,4 +71,32 @@ export const mockMemberships: Record<string, Membership> = {
     role: Role.OWNER,
     createdAt: new Date('2023-11-15')
   }
+}
+
+export const mockInvites: Record<string, Invite> = {
+  invite1: {
+    id: 'invite1',
+    email: 'carlos@example.com',
+    companyId: 'company1',
+    token: 'token-valid-' + Date.now(),
+    role: Role.MEMBER,
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    createdAt: new Date(),
+    company: mockCompanies.company1
+  },
+  invite2: {
+    id: 'invite2',
+    email: 'ana@example.com',
+    companyId: 'company2',
+    token: 'token-admin-' + Date.now(),
+    role: Role.ADMIN,
+    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    createdAt: new Date(),
+    company: mockCompanies.company2
+  }
+}
+
+export const mockSession = {
+  currentUserId: 'user1',
+  activeCompanyId: 'company1'
 }

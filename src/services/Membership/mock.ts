@@ -1,9 +1,36 @@
 import { mockMemberships, mockUsers } from '@/mocks/data'
-import { MembershipWithUser } from '@/types/Membership'
+import type { MembershipWithUser } from '@/types/Membership'
 import { Role } from '@/types/Role'
 import { delay } from '@/utils/delay'
 
 export const membershipMockService = {
+  async addMembership(
+    userId: string,
+    companyId: string,
+    role: Role
+  ): Promise<void> {
+    await delay(300)
+
+    const existingMembership = Object.values(mockMemberships).find(
+      m => m.userId === userId && m.companyId === companyId
+    )
+
+    if (existingMembership) {
+      throw new Error('Usuário já é membro desta empresa')
+    }
+
+    const newMembership: MembershipWithUser = {
+      id: `membership${Date.now()}`,
+      userId,
+      companyId,
+      role,
+      user: mockUsers[userId],
+      createdAt: new Date()
+    }
+
+    mockMemberships[newMembership.id] = newMembership
+  },
+
   async listMembersByCompany(companyId: string): Promise<MembershipWithUser[]> {
     await delay(500)
 
@@ -28,7 +55,7 @@ export const membershipMockService = {
 
     const membership = mockMemberships[membershipId]
     if (!membership) {
-      throw new Error('Membro não encontrado')
+      throw new Error('Membro não encontrada')
     }
 
     const requesterMembership = Object.values(mockMemberships).find(
@@ -36,7 +63,7 @@ export const membershipMockService = {
     )
 
     if (!requesterMembership) {
-      throw new Error('Permissão insuficiente')
+      throw new Error('Permissões insuficientes')
     }
 
     const isRequesterAdmin =
@@ -44,7 +71,7 @@ export const membershipMockService = {
       requesterMembership.role === Role.ADMIN
 
     if (!isRequesterAdmin) {
-      throw new Error('Permissão insuficiente')
+      throw new Error('Permissões insuficientes')
     }
 
     if (
@@ -52,11 +79,11 @@ export const membershipMockService = {
       newRole !== Role.OWNER &&
       requesterMembership.role !== Role.OWNER
     ) {
-      throw new Error('Apenas o PROPRIETÁRIO pode modificar outro PROPRIETÁRIO')
+      throw new Error('Apenas PROPRIETÁRIO pode modificar outro PROPRIETÁRIO')
     }
 
     if (newRole === Role.OWNER && requesterMembership.role !== Role.OWNER) {
-      throw new Error('Não pode setar esse usuário como PROPRIETÁRIO')
+      throw new Error('Não é possível definir usuário como PROPRIETÁRIO')
     }
 
     membership.role = newRole
@@ -71,7 +98,7 @@ export const membershipMockService = {
 
     const membership = mockMemberships[membershipId]
     if (!membership) {
-      throw new Error('Membro não encontrado')
+      throw new Error('Membro não encontrada')
     }
 
     const requesterMembership = Object.values(mockMemberships).find(
@@ -79,7 +106,7 @@ export const membershipMockService = {
     )
 
     if (!requesterMembership) {
-      throw new Error('Permissão insuficiente')
+      throw new Error('Permissões insuficientes')
     }
 
     const isRequesterAdmin =
@@ -87,7 +114,7 @@ export const membershipMockService = {
       requesterMembership.role === Role.ADMIN
 
     if (!isRequesterAdmin) {
-      throw new Error('Permissão insuficiente')
+      throw new Error('Permissões insuficientes')
     }
 
     if (membership.role === Role.OWNER) {
@@ -96,13 +123,11 @@ export const membershipMockService = {
       ).length
 
       if (ownerCount <= 1) {
-        throw new Error('Não pode remover o último PROPRIETÁRIO')
+        throw new Error('Não é possível remover o último PROPRIETÁRIO')
       }
 
       if (requesterMembership.role !== Role.OWNER) {
-        throw new Error(
-          'Apenas um PROPRIETÁRIO pode remover outro PROPRIETÁRIO'
-        )
+        throw new Error('Apenas PROPRIETÁRIO pode remover outro PROPRIETÁRIO')
       }
     }
 
