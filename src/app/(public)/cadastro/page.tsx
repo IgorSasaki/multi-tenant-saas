@@ -4,12 +4,15 @@ import { NextPage } from 'next'
 
 import { AuthLayout } from '@/components/layout/AuthLayout'
 
-import { SignInForm } from './_components/SignInForm'
+import { SignUpForm } from './_components/SignUpForm'
 
 const Page: NextPage = () => {
   return (
-    <AuthLayout description="Acesse sua conta Altaa" title="Bem-vindo de volta">
-      <SignInForm />
+    <AuthLayout
+      description="Comece a gerenciar suas empresas"
+      title="Criar sua conta"
+    >
+      <SignUpForm />
     </AuthLayout>
   )
 }
