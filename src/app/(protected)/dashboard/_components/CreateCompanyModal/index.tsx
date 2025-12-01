@@ -40,7 +40,7 @@ export const CreateCompanyModal: FC<CreateCompanyModalProps> = ({
       await onSubmit(data)
       form.reset()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create company')
+      setError(err instanceof Error ? err.message : 'Falha ao criar empresa')
     }
   }
 
