@@ -3,13 +3,13 @@
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 
-import { CompanyList } from '@/components/structure/CompanyList'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/useAuth'
 import { useCompanies } from '@/hooks/useCompanies'
 import { companyMockService } from '@/services/Company/mock'
 import { Role } from '@/types/Role'
 
+import { CompanyList } from './_components/CompanyList'
 import { CreateCompanyModal } from './_components/CreateCompanyModal'
 import type { CompanyFormData } from './_components/CreateCompanyModal/schemas'
 

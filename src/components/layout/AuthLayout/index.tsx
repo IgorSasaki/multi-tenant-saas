@@ -11,7 +11,7 @@ export const AuthLayout: FC<AuthLayoutProps> = ({
   description
 }) => {
   return (
-    <div className="from-background to-muted flex min-h-screen items-center justify-center bg-gradient-to-br p-4">
+    <div className="from-background to-muted flex min-h-screen items-center justify-center bg-linear-to-br p-4">
       <motion.div
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"

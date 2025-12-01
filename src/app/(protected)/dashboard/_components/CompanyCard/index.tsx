@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import Image from 'next/image'
+import Link from 'next/link'
 import { FC } from 'react'
 
 import { Badge } from '@/components/ui/badge'
@@ -36,7 +37,7 @@ export const CompanyCard: FC<CompanyCardProps> = ({
         <div className="p-6">
           <div className="mb-4 flex items-start justify-between">
             {company.logo && (
-              <div className="bg-muted relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg">
+              <div className="bg-muted relative h-12 w-12 shrink-0 overflow-hidden rounded-lg">
                 <Image
                   alt={company.name}
                   className="object-cover"
@@ -58,13 +59,19 @@ export const CompanyCard: FC<CompanyCardProps> = ({
             Criada em {new Date(company.createdAt).toLocaleDateString('pt-BR')}
           </p>
 
-          <Button
-            className="w-full"
-            onClick={onSelect}
-            variant={isActive ? 'default' : 'outline'}
-          >
-            {isActive ? 'Empresa Ativa' : 'Selecionar'}
-          </Button>
+          <div className="flex gap-2">
+            <Link className="flex-1" href={`/empresa/${company.id}`}>
+              <Button className="w-full" variant="default">
+                Ver Detalhes
+              </Button>
+            </Link>
+            <Button
+              onClick={onSelect}
+              variant={isActive ? 'default' : 'outline'}
+            >
+              {isActive ? '✓ Ativa' : 'Selecionar'}
+            </Button>
+          </div>
         </div>
       </Card>
     </motion.div>
