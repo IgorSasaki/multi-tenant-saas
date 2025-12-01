@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useAuth } from '@/hooks/useAuth'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { CONTAINER_VARIANTS, ITEM_VARIANTS } from './data'
@@ -16,6 +17,8 @@ import { signInSchema, type SignInFormData } from './schemas'
 
 export const SignInForm: FC = () => {
   const router = useRouter()
+
+  const { login } = useAuth()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const {
@@ -34,7 +37,7 @@ export const SignInForm: FC = () => {
     setIsSubmitting(true)
 
     try {
-      console.log({ data })
+      await login(data.email, data.password)
 
       router.push('/dashboard')
     } catch (error) {

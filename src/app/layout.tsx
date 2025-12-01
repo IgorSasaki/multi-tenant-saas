@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import type React from 'react'
 
 import '@/styles/globals.css'
+import { AuthProvider } from '@/contexts/AuthContext'
+import { TenantProvider } from '@/contexts/TenantContext'
 import { cn } from '@/lib/utils'
 
 const _geist = Geist({ subsets: ['latin'] })
@@ -27,7 +29,9 @@ const RootLayout = ({
           _geistMono.className
         )}
       >
-        {children}
+        <AuthProvider>
+          <TenantProvider>{children}</TenantProvider>
+        </AuthProvider>
       </body>
     </html>
   )
