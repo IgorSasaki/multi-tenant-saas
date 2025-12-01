@@ -13,7 +13,9 @@ export const inviteMockService = {
     await delay(500)
 
     if (data.role === Role.OWNER) {
-      throw new Error('Cannot create invite for OWNER role')
+      throw new Error(
+        'Você não pode criar um convite com o perfil de PROPRIETÁRIO'
+      )
     }
 
     const existingInvite = Object.values(mockInvites).find(
@@ -54,11 +56,11 @@ export const inviteMockService = {
 
     const invite = Object.values(mockInvites).find(i => i.token === token)
     if (!invite) {
-      throw new Error('Invalid or expired invite')
+      throw new Error('Convite inválido ou expirado')
     }
 
     if (invite.expiresAt < new Date()) {
-      throw new Error('Invite has expired')
+      throw new Error('Convite expirado')
     }
   }
 }

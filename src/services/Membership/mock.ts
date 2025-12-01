@@ -28,7 +28,7 @@ export const membershipMockService = {
 
     const membership = mockMemberships[membershipId]
     if (!membership) {
-      throw new Error('Membership not found')
+      throw new Error('Membro não encontrado')
     }
 
     const requesterMembership = Object.values(mockMemberships).find(
@@ -36,7 +36,7 @@ export const membershipMockService = {
     )
 
     if (!requesterMembership) {
-      throw new Error('Insufficient permissions')
+      throw new Error('Permissão insuficiente')
     }
 
     const isRequesterAdmin =
@@ -44,7 +44,7 @@ export const membershipMockService = {
       requesterMembership.role === Role.ADMIN
 
     if (!isRequesterAdmin) {
-      throw new Error('Insufficient permissions')
+      throw new Error('Permissão insuficiente')
     }
 
     if (
@@ -52,11 +52,11 @@ export const membershipMockService = {
       newRole !== Role.OWNER &&
       requesterMembership.role !== Role.OWNER
     ) {
-      throw new Error('Only OWNER can modify another OWNER')
+      throw new Error('Apenas o PROPRIETÁRIO pode modificar outro PROPRIETÁRIO')
     }
 
     if (newRole === Role.OWNER && requesterMembership.role !== Role.OWNER) {
-      throw new Error('Cannot set user as OWNER')
+      throw new Error('Não pode setar esse usuário como PROPRIETÁRIO')
     }
 
     membership.role = newRole
@@ -71,7 +71,7 @@ export const membershipMockService = {
 
     const membership = mockMemberships[membershipId]
     if (!membership) {
-      throw new Error('Membership not found')
+      throw new Error('Membro não encontrado')
     }
 
     const requesterMembership = Object.values(mockMemberships).find(
@@ -79,7 +79,7 @@ export const membershipMockService = {
     )
 
     if (!requesterMembership) {
-      throw new Error('Insufficient permissions')
+      throw new Error('Permissão insuficiente')
     }
 
     const isRequesterAdmin =
@@ -87,7 +87,7 @@ export const membershipMockService = {
       requesterMembership.role === Role.ADMIN
 
     if (!isRequesterAdmin) {
-      throw new Error('Insufficient permissions')
+      throw new Error('Permissão insuficiente')
     }
 
     if (membership.role === Role.OWNER) {
@@ -96,11 +96,13 @@ export const membershipMockService = {
       ).length
 
       if (ownerCount <= 1) {
-        throw new Error('Cannot remove the last OWNER')
+        throw new Error('Não pode remover o último PROPRIETÁRIO')
       }
 
       if (requesterMembership.role !== Role.OWNER) {
-        throw new Error('Only OWNER can remove another OWNER')
+        throw new Error(
+          'Apenas um PROPRIETÁRIO pode remover outro PROPRIETÁRIO'
+        )
       }
     }
 

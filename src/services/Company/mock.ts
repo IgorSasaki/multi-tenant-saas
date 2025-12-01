@@ -50,7 +50,7 @@ export const companyMockService = {
     )
 
     if (!membership) {
-      throw new Error('User is not a member of this company')
+      throw new Error('Usuário não é membro dessa empresa')
     }
 
     const user = mockUsers[userId]

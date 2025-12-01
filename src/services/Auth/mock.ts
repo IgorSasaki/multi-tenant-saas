@@ -13,7 +13,7 @@ export const authMockService = {
     )
 
     if (!user || credentials.password !== 'password123') {
-      throw new Error('Invalid email or password')
+      throw new Error('E-mail ou senha inválida')
     }
 
     currentSessionUser = user
@@ -32,7 +32,7 @@ export const authMockService = {
     )
 
     if (existingUser) {
-      throw new Error('User with this email already exists')
+      throw new Error('E-mail em uso')
     }
 
     const newUser: User = {

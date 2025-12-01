@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/useAuth'
 import { useCompanies } from '@/hooks/useCompanies'
+import { useToast } from '@/hooks/useToast'
 import { companyMockService } from '@/services/Company/mock'
 import { Role } from '@/types/Role'
 
@@ -22,6 +23,7 @@ export default function DashboardPage() {
     createCompany,
     isLoading
   } = useCompanies()
+  const { success, error } = useToast()
 
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [userRoles, setUserRoles] = useState<Record<string, Role>>({})
@@ -45,13 +47,26 @@ export default function DashboardPage() {
   }
 
   const handleSelectCompany = async (companyId: string) => {
-    await selectCompany(companyId)
+    try {
+      await selectCompany(companyId)
+
+      success('Empresa selecionada com sucesso!')
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'Falha ao selecionar empresa'
+      error(errorMessage)
+    }
   }
 
   const handleCreateCompany = async (data: CompanyFormData) => {
-    await createCompany(data.name, data.logo || undefined, user?.id)
-    setIsDialogOpen(false)
-    await getUserRoles()
+    try {
+      await createCompany(data.name, data.logo, user?.id)
+      setIsDialogOpen(false)
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'Falha ao criar empresa'
+      error(errorMessage)
+    }
   }
 
   return (

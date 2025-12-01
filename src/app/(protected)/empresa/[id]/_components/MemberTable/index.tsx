@@ -20,6 +20,7 @@ import {
   TableHeader,
   TableRow
 } from '@/components/ui/table'
+import { useToast } from '@/hooks/useToast'
 import { Role } from '@/types/Role'
 
 import { MemberTableProps } from './types'
@@ -37,9 +38,36 @@ export const MemberTable: FC<MemberTableProps> = ({
   onRemoveMember,
   isLoading = false
 }) => {
+  const { success, error } = useToast()
   const canManage =
     currentUserRole === Role.OWNER || currentUserRole === Role.ADMIN
   const isOwner = currentUserRole === Role.OWNER
+
+  const handleRoleChange = async (membershipId: string, newRole: Role) => {
+    try {
+      if (onRoleChange) {
+        await onRoleChange(membershipId, newRole)
+        success('Papel do membro atualizado com sucesso!')
+      }
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'Falha ao atualizar papel'
+      error(errorMessage)
+    }
+  }
+
+  const handleRemoveMember = async (membershipId: string) => {
+    try {
+      if (onRemoveMember) {
+        await onRemoveMember(membershipId)
+        success('Membro removido com sucesso!')
+      }
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'Falha ao remover membro'
+      error(errorMessage)
+    }
+  }
 
   if (members.length === 0) {
     return (
@@ -89,11 +117,9 @@ export const MemberTable: FC<MemberTableProps> = ({
                   <div className="flex gap-2">
                     {member.role !== Role.OWNER && (
                       <Select
-                        onValueChange={async role => {
-                          if (onRoleChange) {
-                            await onRoleChange(member.id, role as Role)
-                          }
-                        }}
+                        onValueChange={role =>
+                          handleRoleChange(member.id, role as Role)
+                        }
                         disabled={isLoading}
                         value={member.role}
                       >
@@ -114,7 +140,7 @@ export const MemberTable: FC<MemberTableProps> = ({
                     {member.role !== Role.OWNER && onRemoveMember && (
                       <Button
                         disabled={isLoading}
-                        onClick={() => onRemoveMember(member.id)}
+                        onClick={() => handleRemoveMember(member.id)}
                         size="sm"
                         variant="destructive"
                       >
