@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import type React from 'react'
+import { Toaster } from 'sonner'
 
 import '@/styles/globals.css'
 import { AuthProvider } from '@/contexts/AuthContext'
@@ -30,7 +31,11 @@ const RootLayout = ({
         )}
       >
         <AuthProvider>
-          <TenantProvider>{children}</TenantProvider>
+          <TenantProvider>
+            {children}
+
+            <Toaster position="top-right" expand richColors />
+          </TenantProvider>
         </AuthProvider>
       </body>
     </html>

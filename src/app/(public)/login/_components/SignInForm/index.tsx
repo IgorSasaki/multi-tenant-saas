@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/useAuth'
+import { useToast } from '@/hooks/useToast'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { CONTAINER_VARIANTS, ITEM_VARIANTS } from './data'
@@ -19,6 +20,7 @@ export const SignInForm: FC = () => {
   const router = useRouter()
 
   const { login } = useAuth()
+  const { success, error } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const {
@@ -39,9 +41,14 @@ export const SignInForm: FC = () => {
     try {
       await login(data.email, data.password)
 
+      success('Bem-vindo de volta!')
+
       router.push('/dashboard')
-    } catch (error) {
-      console.error({ handleSubmitSignInError: error })
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'Falha ao fazer login'
+
+      error(errorMessage)
     } finally {
       setIsSubmitting(false)
     }

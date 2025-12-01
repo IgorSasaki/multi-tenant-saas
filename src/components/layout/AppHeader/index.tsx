@@ -7,16 +7,19 @@ import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/useAuth'
 import { useCompanies } from '@/hooks/useCompanies'
+import { useToast } from '@/hooks/useToast'
 
 export function AppHeader() {
   const router = useRouter()
   const { user, logout } = useAuth()
   const { activeCompanyId, companies } = useCompanies()
+  const { success } = useToast()
 
   const activeCompany = companies.find(c => c.id === activeCompanyId)
 
   const handleLogout = () => {
     logout()
+    success('Logout realizado com sucesso!')
     router.push('/login')
   }
 

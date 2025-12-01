@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/useAuth'
+import { useToast } from '@/hooks/useToast'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { CONTAINER_VARIANTS, ITEM_VARIANTS } from './data'
@@ -17,7 +18,10 @@ import { signUpSchema, type SignUpFormData } from './schemas'
 
 export const SignUpForm: FC = () => {
   const router = useRouter()
+
   const { signup } = useAuth()
+  const { success, error } = useToast()
+
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [apiError, setApiError] = useState<string | null>(null)
 
@@ -41,9 +45,14 @@ export const SignUpForm: FC = () => {
 
     try {
       await signup(data.name, data.email, data.password)
+      success('Conta criada com sucesso!')
+
       router.push('/dashboard')
-    } catch (error) {
-      console.error({ handleSubmitSignUpError: error })
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'Falha ao criar conta'
+
+      error(errorMessage)
     } finally {
       setIsSubmitting(false)
     }
