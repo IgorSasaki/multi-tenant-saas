@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 
 import { useAuth } from '@/hooks/useAuth'
 import { companyService } from '@/services/Company'
-import { inviteMockService } from '@/services/Invite/mock'
+import { inviteService } from '@/services/Invite'
 import { membershipService } from '@/services/Membership'
 import type { Company } from '@/types/Company'
 import type { MembershipWithUser } from '@/types/Membership'
@@ -74,7 +74,7 @@ const Page: NextPage = () => {
     if (!companyId) return
 
     try {
-      await inviteMockService.createInvite(companyId, data)
+      await inviteService.createInvite(companyId, data)
       setIsDialogOpen(false)
     } catch (err) {
       console.error({ handleInviteMemberError: err })
@@ -85,12 +85,7 @@ const Page: NextPage = () => {
     if (!user) return
 
     try {
-      await membershipService.updateMemberRole(
-        membershipId,
-        newRole,
-        user.id,
-        companyId
-      )
+      await membershipService.updateMemberRole(membershipId, newRole)
 
       const updatedMembers =
         await membershipService.listMembersByCompany(companyId)
@@ -104,7 +99,7 @@ const Page: NextPage = () => {
     if (!user) return
 
     try {
-      await membershipService.removeMember(membershipId, user.id, companyId)
+      await membershipService.removeMember(membershipId)
 
       const updatedMembers =
         await membershipService.listMembersByCompany(companyId)

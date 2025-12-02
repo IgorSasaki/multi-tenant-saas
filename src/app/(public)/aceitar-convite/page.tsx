@@ -10,8 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/useToast'
-import { inviteMockService } from '@/services/Invite/mock'
-import { membershipService } from '@/services/Membership'
+import { inviteService } from '@/services/Invite'
 import type { Invite } from '@/types/Invite'
 import { Role } from '@/types/Role'
 
@@ -47,7 +46,7 @@ const Page: NextPage = () => {
 
       try {
         setIsLoading(true)
-        const inviteData = await inviteMockService.getInviteByToken(token)
+        const inviteData = await inviteService.getInviteByToken(token)
 
         if (!inviteData || inviteData.isExpired) {
           setErrorState('Esse convite está expirado')
@@ -72,8 +71,7 @@ const Page: NextPage = () => {
 
     try {
       setIsLoading(true)
-      await inviteMockService.acceptInviteAsExistingUser(token, user.id)
-      await membershipService.addMembership()
+      await inviteService.acceptInviteAsExistingUser(token)
 
       success('Convite aceito com sucesso!')
       router.push(`/empresa/${invite.companyId}`)
@@ -94,7 +92,7 @@ const Page: NextPage = () => {
 
     try {
       setIsLoading(true)
-      await inviteMockService.acceptInviteAsNewUser(token, {
+      await inviteService.acceptInviteAsNewUser(token, {
         name: data.name,
         email: invite.email,
         password: data.password
