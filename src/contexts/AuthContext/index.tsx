@@ -3,7 +3,7 @@
 import type React from 'react'
 import { createContext, useCallback, useEffect, useState } from 'react'
 
-import { authMockService } from '@/services/Auth/mock'
+import { authService } from '@/services/Auth'
 import { type User } from '@/types/User'
 
 import { AuthContextType } from './types'
@@ -17,7 +17,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        const currentUser = await authMockService.getCurrentUser()
+        const currentUser = await authService.getCurrentUser()
         setUser(currentUser)
       } catch (error) {
         console.error('Failed to initialize auth:', error)
@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = useCallback(async (email: string, password: string) => {
     setIsLoading(true)
     try {
-      const userData = await authMockService.login({ email, password })
+      const userData = await authService.login({ email, password })
       setUser(userData)
     } finally {
       setIsLoading(false)
@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async (name: string, email: string, password: string) => {
       setIsLoading(true)
       try {
-        const userData = await authMockService.signup({
+        const userData = await authService.signup({
           name,
           email,
           password,
@@ -58,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   )
 
   const logout = useCallback(() => {
-    authMockService.logout()
+    authService.logout()
     setUser(null)
   }, [])
 
