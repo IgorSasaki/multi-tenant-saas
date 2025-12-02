@@ -1,12 +1,9 @@
 import { apiFetch } from '@/lib/api'
 import type { SignInData, SignupData, User } from '@/types/User'
 
-let currentSessionUser: User | null = null
+import { AuthResponse } from './types'
 
-type AuthResponse = {
-  user: User
-  token?: string
-}
+let currentSessionUser: User | null = null
 
 export const authService = {
   async login(credentials: SignInData): Promise<User> {

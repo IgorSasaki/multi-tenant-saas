@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/useAuth'
 import { useCompanies } from '@/hooks/useCompanies'
 import { useToast } from '@/hooks/useToast'
-import { companyMockService } from '@/services/Company/mock'
+import { companyService } from '@/services/Company'
 import { Role } from '@/types/Role'
 
 import { CompanyList } from './_components/CompanyList'
@@ -35,7 +35,7 @@ export default function DashboardPage() {
   const getUserRoles = async () => {
     const roles: Record<string, Role> = {}
     for (const company of companies) {
-      const result = await companyMockService.getCompanyWithUserRole(
+      const result = await companyService.getCompanyWithUserRole(
         company.id,
         user?.id || ''
       )

@@ -6,7 +6,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import { useAuth } from '@/hooks/useAuth'
-import { companyMockService } from '@/services/Company/mock'
+import { companyService } from '@/services/Company'
 import { inviteMockService } from '@/services/Invite/mock'
 import { membershipMockService } from '@/services/Membership/mock'
 import type { Company } from '@/types/Company'
@@ -41,7 +41,7 @@ const Page: NextPage = () => {
         setIsLoading(true)
         setError(null)
 
-        const result = await companyMockService.getCompanyWithUserRole(
+        const result = await companyService.getCompanyWithUserRole(
           companyId,
           user.id
         )

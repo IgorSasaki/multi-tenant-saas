@@ -8,7 +8,7 @@ import {
   useState
 } from 'react'
 
-import { companyMockService } from '@/services/Company/mock'
+import { companyService } from '@/services/Company'
 import type { Company } from '@/types/Company'
 import type { Role } from '@/types/Role'
 
@@ -24,30 +24,26 @@ export const TenantProvider: FC<PropsWithChildren> = ({ children }) => {
   const [userRole, _setUserRole] = useState<Role | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  const loadCompanies = useCallback(
-    async (userId: string) => {
-      setIsLoading(true)
-      try {
-        const userCompanies =
-          await companyMockService.listCompaniesByUser(userId)
-        setCompanies(userCompanies)
+  const loadCompanies = useCallback(async () => {
+    setIsLoading(true)
+    try {
+      const userCompanies = await companyService.listCompaniesByUser()
+      setCompanies(userCompanies)
 
-        if (userCompanies.length > 0 && !activeCompanyId) {
-          setActiveCompanyId(userCompanies[0].id)
-        }
-      } finally {
-        setIsLoading(false)
+      if (userCompanies.length > 0 && !activeCompanyId) {
+        setActiveCompanyId(userCompanies[0].id)
       }
-    },
-    [activeCompanyId]
-  )
+    } finally {
+      setIsLoading(false)
+    }
+  }, [activeCompanyId])
 
   const selectCompany = useCallback(
     async (companyId: string, userId?: string) => {
       setIsLoading(true)
       try {
         if (userId) {
-          await companyMockService.selectCompany(userId, companyId)
+          await companyService.selectCompany(companyId)
         }
         setActiveCompanyId(companyId)
       } finally {
@@ -62,10 +58,7 @@ export const TenantProvider: FC<PropsWithChildren> = ({ children }) => {
       setIsLoading(true)
       try {
         if (userId) {
-          const newCompany = await companyMockService.createCompany(
-            { name, logo },
-            userId
-          )
+          const newCompany = await companyService.createCompany({ name, logo })
           setCompanies(prev => [...prev, newCompany])
           setActiveCompanyId(newCompany.id)
         }
