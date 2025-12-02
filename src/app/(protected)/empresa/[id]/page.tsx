@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { companyService } from '@/services/Company'
 import { inviteMockService } from '@/services/Invite/mock'
-import { membershipMockService } from '@/services/Membership/mock'
+import { membershipService } from '@/services/Membership'
 import type { Company } from '@/types/Company'
 import type { MembershipWithUser } from '@/types/Membership'
 import { Role } from '@/types/Role'
@@ -56,7 +56,7 @@ const Page: NextPage = () => {
         setCurrentUserRole(result.role)
 
         const companyMembers =
-          await membershipMockService.listMembersByCompany(companyId)
+          await membershipService.listMembersByCompany(companyId)
         setMembers(companyMembers)
       } catch (err) {
         setError(
@@ -85,7 +85,7 @@ const Page: NextPage = () => {
     if (!user) return
 
     try {
-      await membershipMockService.updateMemberRole(
+      await membershipService.updateMemberRole(
         membershipId,
         newRole,
         user.id,
@@ -93,7 +93,7 @@ const Page: NextPage = () => {
       )
 
       const updatedMembers =
-        await membershipMockService.listMembersByCompany(companyId)
+        await membershipService.listMembersByCompany(companyId)
       setMembers(updatedMembers)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Falha ao alterar papel')
@@ -104,10 +104,10 @@ const Page: NextPage = () => {
     if (!user) return
 
     try {
-      await membershipMockService.removeMember(membershipId, user.id, companyId)
+      await membershipService.removeMember(membershipId, user.id, companyId)
 
       const updatedMembers =
-        await membershipMockService.listMembersByCompany(companyId)
+        await membershipService.listMembersByCompany(companyId)
       setMembers(updatedMembers)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Falha ao remover membro')

@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from 'react'
 
-import { membershipMockService } from '@/services/Membership/mock'
+import { membershipService } from '@/services/Membership'
 import { MembershipWithUser } from '@/types/Membership'
 import { Role } from '@/types/Role'
 
@@ -13,7 +13,7 @@ export function useMembers() {
   const loadMembers = useCallback(async (companyId: string) => {
     setIsLoading(true)
     try {
-      const data = await membershipMockService.listMembersByCompany(companyId)
+      const data = await membershipService.listMembersByCompany(companyId)
       setMembers(data)
     } finally {
       setIsLoading(false)
@@ -29,12 +29,7 @@ export function useMembers() {
     ) => {
       setIsLoading(true)
       try {
-        await membershipMockService.updateMemberRole(
-          membershipId,
-          newRole,
-          requesterId,
-          companyId
-        )
+        await membershipService.updateMemberRole(membershipId, newRole)
         await loadMembers(companyId)
       } finally {
         setIsLoading(false)
@@ -47,11 +42,7 @@ export function useMembers() {
     async (membershipId: string, requesterId: string, companyId: string) => {
       setIsLoading(true)
       try {
-        await membershipMockService.removeMember(
-          membershipId,
-          requesterId,
-          companyId
-        )
+        await membershipService.removeMember(membershipId)
         await loadMembers(companyId)
       } finally {
         setIsLoading(false)

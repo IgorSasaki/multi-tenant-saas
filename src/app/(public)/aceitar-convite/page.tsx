@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { useAuth } from '@/hooks/useAuth'
 import { useToast } from '@/hooks/useToast'
 import { inviteMockService } from '@/services/Invite/mock'
-import { membershipMockService } from '@/services/Membership/mock'
+import { membershipService } from '@/services/Membership'
 import type { Invite } from '@/types/Invite'
 import { Role } from '@/types/Role'
 
@@ -73,11 +73,7 @@ const Page: NextPage = () => {
     try {
       setIsLoading(true)
       await inviteMockService.acceptInviteAsExistingUser(token, user.id)
-      await membershipMockService.addMembership(
-        user.id,
-        invite.companyId,
-        invite.role
-      )
+      await membershipService.addMembership()
 
       success('Convite aceito com sucesso!')
       router.push(`/empresa/${invite.companyId}`)
