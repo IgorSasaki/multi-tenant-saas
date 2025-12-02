@@ -30,6 +30,7 @@ const Page: NextPage = () => {
   const { success, error } = useToast()
 
   const token = searchParams.get('token')
+
   const [invite, setInvite] = useState<
     (Invite & { isExpired: boolean }) | null
   >(null)
@@ -66,13 +67,19 @@ const Page: NextPage = () => {
     loadInvite()
   }, [token])
 
+  // Auto-aceita quando usuário loga e volta pra página
+  useEffect(() => {
+    if (user && invite && token && !isLoading && user.email === invite.email) {
+      handleAcceptAsExistingUser()
+    }
+  }, [user, invite, token, isLoading])
+
   const handleAcceptAsExistingUser = async () => {
     if (!invite || !user || !token) return
 
     try {
       setIsLoading(true)
       await inviteService.acceptInviteAsExistingUser(token)
-
       success('Convite aceito com sucesso!')
       router.push(`/empresa/${invite.companyId}`)
     } catch (err) {
@@ -92,14 +99,19 @@ const Page: NextPage = () => {
 
     try {
       setIsLoading(true)
-      await inviteService.acceptInviteAsNewUser(token, {
+      const response = await inviteService.acceptInviteAsNewUser(token, {
         name: data.name,
         email: invite.email,
         password: data.password
       })
 
+      if (response.requiresLogin) {
+        error('Você já possui uma conta. Faça login para aceitar o convite.')
+        router.push(`/login?redirect=/aceitar-convite?token=${token}`)
+        return
+      }
+
       success('Conta criada e convite aceito com sucesso!')
-      // Reload auth context with new user
       await new Promise(resolve => setTimeout(resolve, 500))
       router.push(`/empresa/${invite.companyId}`)
     } catch (err) {
@@ -109,6 +121,11 @@ const Page: NextPage = () => {
       setErrorState(message)
       setIsLoading(false)
     }
+  }
+
+  const handleRedirectToLogin = () => {
+    if (!token) return
+    router.push(`/login?redirect=/aceitar-convite?token=${token}`)
   }
 
   if (isLoading || authLoading) {
@@ -156,19 +173,24 @@ const Page: NextPage = () => {
         initial={{ opacity: 0, y: 20 }}
       >
         {user && user.email !== invite.email ? (
-          <div>
-            <p className="text-muted-foreground mb-4 text-sm">
-              Você está logado como {user.email}. Este convite é para{' '}
-              {invite.email}. Faça logout e aceite com o email correto.
-            </p>
-            <Button
-              className="w-full"
-              onClick={() => router.push('/login')}
-              variant="outline"
-            >
-              Sair e Aceitar
-            </Button>
-          </div>
+          <Card>
+            <CardContent className="pt-6">
+              <p className="text-muted-foreground mb-4 text-sm">
+                Você está logado como <strong>{user.email}</strong>. Este
+                convite é para <strong>{invite.email}</strong>.
+              </p>
+              <p className="text-muted-foreground mb-6 text-sm">
+                Faça logout e entre com a conta correta para aceitar o convite.
+              </p>
+              <Button
+                className="w-full"
+                onClick={handleRedirectToLogin}
+                variant="outline"
+              >
+                Ir para login
+              </Button>
+            </CardContent>
+          </Card>
         ) : user ? (
           <AcceptInviteExistingUserForm
             isLoading={isLoading}
@@ -176,11 +198,39 @@ const Page: NextPage = () => {
             userName={user.name}
           />
         ) : (
-          <AcceptInviteNewUserForm
-            email={invite.email}
-            isLoading={isLoading}
-            onAccept={handleAcceptAsNewUser}
-          />
+          <Card>
+            <CardContent className="space-y-4 pt-6">
+              <div>
+                <p className="text-muted-foreground mb-4 text-sm">
+                  Este convite é para <strong>{invite.email}</strong>.
+                </p>
+                <Button
+                  className="w-full"
+                  onClick={handleRedirectToLogin}
+                  variant="default"
+                >
+                  Já tenho conta - Fazer login
+                </Button>
+              </div>
+
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background text-muted-foreground px-2">
+                    Ou criar nova conta
+                  </span>
+                </div>
+              </div>
+
+              <AcceptInviteNewUserForm
+                email={invite.email}
+                isLoading={isLoading}
+                onAccept={handleAcceptAsNewUser}
+              />
+            </CardContent>
+          </Card>
         )}
       </motion.div>
     </AuthLayout>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 
 import { AuthLayout } from '@/components/layout/AuthLayout'
@@ -10,13 +10,20 @@ import { SignInForm } from './_components/SignInForm'
 
 export default function LoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { isAuthenticated, isLoading } = useAuth()
+
+  const redirect = searchParams.get('redirect')
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      router.push('/dashboard')
+      if (redirect) {
+        router.push(redirect)
+      } else {
+        router.push('/dashboard')
+      }
     }
-  }, [isAuthenticated, isLoading, router])
+  }, [isAuthenticated, isLoading, router, redirect])
 
   if (isLoading) {
     return (
@@ -30,7 +37,7 @@ export default function LoginPage() {
 
   return (
     <AuthLayout description="Acesse sua conta Altaa" title="Bem-vindo de volta">
-      <SignInForm />
+      <SignInForm redirect={redirect} />
     </AuthLayout>
   )
 }

@@ -15,10 +15,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import { CONTAINER_VARIANTS, ITEM_VARIANTS } from './data'
 import { signInSchema, type SignInFormData } from './schemas'
+import { SignInFormProps } from './types'
 
-export const SignInForm: FC = () => {
+export const SignInForm: FC<SignInFormProps> = ({ redirect }) => {
   const router = useRouter()
-
   const { login } = useAuth()
   const { success, error } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -40,14 +40,16 @@ export const SignInForm: FC = () => {
 
     try {
       await login(data.email, data.password)
-
       success('Bem-vindo de volta!')
 
-      router.push('/dashboard')
+      if (redirect) {
+        router.push(redirect)
+      } else {
+        router.push('/dashboard')
+      }
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : 'Falha ao fazer login'
-
       error(errorMessage)
     } finally {
       setIsSubmitting(false)
@@ -62,6 +64,15 @@ export const SignInForm: FC = () => {
       onSubmit={handleSubmit(handleSubmitSignIn)}
       variants={CONTAINER_VARIANTS}
     >
+      {redirect && (
+        <motion.div
+          className="bg-primary/10 text-primary rounded-md p-3 text-sm"
+          variants={ITEM_VARIANTS}
+        >
+          Faça login para aceitar o convite
+        </motion.div>
+      )}
+
       <motion.div variants={ITEM_VARIANTS}>
         <Label className="text-sm font-medium" htmlFor="email">
           E-mail

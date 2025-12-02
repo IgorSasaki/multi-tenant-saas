@@ -61,17 +61,21 @@ export const inviteService = {
   async acceptInviteAsNewUser(
     token: string,
     data: { name: string; email: string; password: string }
-  ): Promise<User> {
-    const response = await apiFetch<{ user: User; token?: string }>(
-      `/invite/${token}/accept`,
-      {
-        method: 'POST',
-        body: {
-          name: data.name,
-          password: data.password
-        }
+  ): Promise<{ user: User; requiresLogin?: boolean }> {
+    const response = await apiFetch<{
+      user: User
+      requiresLogin?: boolean
+    }>(`/invite/${token}/accept`, {
+      method: 'POST',
+      body: {
+        name: data.name,
+        password: data.password
       }
-    )
+    })
+
+    if (response.requiresLogin) {
+      return response
+    }
 
     const user = {
       ...response.user,
@@ -82,7 +86,7 @@ export const inviteService = {
       localStorage.setItem('currentUser', JSON.stringify(user))
     }
 
-    return user
+    return { user }
   },
 
   async cancelInvite(companyId: string, token: string): Promise<void> {
